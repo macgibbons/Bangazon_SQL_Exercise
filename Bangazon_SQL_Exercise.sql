@@ -143,12 +143,24 @@ AND DecomissionDate IS NULL
 
 -- 17: List all employees along with the total number of computers they have ever had.
 
+SELECT e.Id, e.FirstName + ' ' +  e.LastName as 'Employee', COUNT(c.ComputerId) As 'Computers Owned'
+FROM Employee e
+LEFT JOIN ComputerEmployee c
+ON c.EmployeeId = e.Id
+GROUP BY  e.Id, e.FirstName, e.LastName
 
 -- 18: List the number of customers using each payment type
+
+SELECT [Name], COUNT(CustomerId) AS 'Amount of Customers'
+FROM PaymentType
+GROUP BY [Name]
 
 
 -- 19: List the 10 most expensive products and the names of the seller
 
+SELECT TOP 10 Id, Title, Price, [Description], Quantity
+FROM Product
+Order BY Price DESC
 
 -- 20: List the 10 most purchased products and the names of the seller
 
