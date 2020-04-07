@@ -98,24 +98,48 @@ VALUES(40, 2)
 -- 12: List the top 3 most popular training programs. (For this question, consider each record in the training program table to be a UNIQUE training program).
  -- this is not correct taking a break
 
-SELECT TOP 3  tp.[Name], COUNT(et.TrainingProgramId) as 'Amount attending'
-FROM EmployeeTraining et
-LEFT JOIN TrainingProgram tp
+SELECT TOP 3  tp.Id, tp.[Name], COUNT(et.EmployeeId) AS 'Amount attending'
+FROM TrainingProgram tp
+LEFT JOIN EmployeeTraining et
 ON et.TrainingProgramId = tp.Id
-GROUP BY et.TrainingProgramId, tp.[Name]
-order by Count(et.employeeId) desc
+GROUP BY tp.Id, tp.[Name]
+ORDER BY COUNT(et.employeeId) DESC
 
 -- 13: List the top 3 most popular training programs. (For this question consider training programs with the same name to be the SAME training program).
+
+SELECT TOP 3 tp.[Name], COUNT(et.EmployeeId) AS 'Count of Attendees'
+FROM TrainingProgram tp
+LEFT JOIN EmployeeTraining et
+ON tp.Id = et.TrainingProgramId
+GROUP BY [Name]
+ORDER BY Count(et.EmployeeId) DESC;
 
 
 -- 14: List all employees who do not have computers.
 
+SELECT  e.FirstName + ' ' +  e.LastName as 'Employees'
+FROM Employee e
+LEFT JOIN ComputerEmployee c
+ON e.Id = c.EmployeeId
+WHERE c.ComputerId IS NULL
 
--- 15: List all employees along with their current computer information make and manufacturer combined into a field entitled ComputerInfo. If they do not have a computer, this field should say "N/A".
+-- 15: List all employees along with their current computer information make and manufacturer combined into a field entitled ComputerInfo. 
+--If they do not have a computer, this field should say "N/A".
 
+SELECT e.FirstName + ' ' +  e.LastName as 'Employee',  
+CASE WHEN c.PurchaseDate IS NULL THEN 'N/A' ELSE REPLACE(CONVERT (varchar(9), c.PurchaseDate, 6), ' ', '-') END AS 'Purchase Date',
+CASE WHEN c.DecomissionDate IS NULL THEN 'N/A' ELSE REPLACE(CONVERT (varchar(9), c.DecomissionDate, 6), ' ', '-') END AS 'Decomission Date',
+ISNULL( c.Make, 'N/A') AS Make, ISNULL( c.Manufacturer, 'N/A') AS Manufacturer
+FROM Employee e
+LEFT JOIN ComputerEmployee ce ON e.Id = ce.EmployeeId
+LEFT JOIN Computer c ON c.Id = ce.ComputerId
 
 -- 16: List all computers that were purchased before July 2019 that are have not been decommissioned.
 
+SELECT Make, Manufacturer, PurchaseDate as 'Purchase Date'
+FROM Computer
+WHERE PurchaseDate < CONVERT( datetime, '7/1/2019 12:00:00 AM')
+AND DecomissionDate IS NULL 
 
 -- 17: List all employees along with the total number of computers they have ever had.
 
