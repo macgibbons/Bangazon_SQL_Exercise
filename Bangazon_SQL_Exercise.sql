@@ -50,7 +50,6 @@ LEFT JOIN EmployeeTraining t
 ON e.Id = t.EmployeeId
 WHERE t.EmployeeId IS null
 
-
 -- 7: List the employee full names for employees who are signed up for at least one training program and include the number of training programs they are signed up for.
 
 SELECT  e.FirstName + ' ' +  e.LastName as 'Employees Not Training',  COUNT(t.EmployeeId) as 'Training Program Count'
@@ -68,18 +67,43 @@ LEFT JOIN EmployeeTraining et
 ON tp.Id = et.TrainingProgramId
 GROUP BY tp.[Name]
 
-
 -- 9: List all training programs who have no more seats available.
+
+SELECT tp.[Name] as 'Training programs at max capacity'
+FROM TrainingProgram tp
+LEFT JOIN EmployeeTraining et
+ON tp.Id = et.TrainingProgramId
+WHERE tp.MaxAttendees <= et.EmployeeId
 
 
 -- 10: List all future training programs ordered by start date with the earliest date first.
 
+SELECT [Name] as Program, StartDate as 'Start Date'
+FROM TrainingProgram
+WHERE StartDate >=  GETDATE()
+ORDER BY StartDate ASC
+
 
 -- 11: Assign a few employees to training programs of your choice.
 
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId)
+VALUES(38, 2)
+
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId)
+VALUES(39, 2)
+
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId)
+VALUES(40, 2)
 
 -- 12: List the top 3 most popular training programs. (For this question, consider each record in the training program table to be a UNIQUE training program).
+ -- this is not correct taking a break
 
+SELECT TOP 3  tp.[Name], COUNT(et.TrainingProgramId) as 'Amount attending'
+FROM EmployeeTraining et
+LEFT JOIN TrainingProgram tp
+ON et.TrainingProgramId = tp.Id
+GROUP BY et.TrainingProgramId, tp.[Name]
+order by Count(et.employeeId) desc
 
 -- 13: List the top 3 most popular training programs. (For this question consider training programs with the same name to be the SAME training program).
 
