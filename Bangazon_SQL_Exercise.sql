@@ -31,24 +31,42 @@ WHERE e.IsSupervisor = 1
 
 -- 4: List each department name along with a count of employees in each department.
 
-SELECT d.[Name], SUM( e.DepartmentId) as 'Total Employees'
+SELECT d.[Name], COUNT(e.Id) as 'Total Employees'
 FROM Department d
 LEFT JOIN Employee e
 ON d.Id = e.DepartmentId
 GROUP BY d.[Name], e.DepartmentId
 
-
-
 -- 5: Write a single update statement to increase each department's budget by 20%.
 
+UPDATE Department set Budget = (Budget * 1.20)
 
 -- 6: List the employee full names for employees who are not signed up for any training programs.
+--COMMENT: has to be 'IS NULL' not = Null
+
+SELECT  e.FirstName + ' ' +  e.LastName as 'Employees Not Training'
+FROM Employee e
+LEFT JOIN EmployeeTraining t
+ON e.Id = t.EmployeeId
+WHERE t.EmployeeId IS null
 
 
 -- 7: List the employee full names for employees who are signed up for at least one training program and include the number of training programs they are signed up for.
 
+SELECT  e.FirstName + ' ' +  e.LastName as 'Employees Not Training',  COUNT(t.EmployeeId) as 'Training Program Count'
+FROM Employee e
+LEFT JOIN EmployeeTraining t
+ON e.Id = t.EmployeeId
+WHERE t.EmployeeId IS NOT NULL
+GROUP BY e.FirstName, e.LastName
 
 -- 8: List all training programs along with the count employees who have signed up for each.
+
+SELECT tp.[Name], COUNT(et.EmployeeId) as 'Attending'
+FROM TrainingProgram tp
+LEFT JOIN EmployeeTraining et
+ON tp.Id = et.TrainingProgramId
+GROUP BY tp.[Name]
 
 
 -- 9: List all training programs who have no more seats available.
