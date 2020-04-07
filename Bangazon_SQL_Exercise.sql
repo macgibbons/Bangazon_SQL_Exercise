@@ -3,15 +3,40 @@
 			 -- 04/07/2020 --
 
 -- 1: List each employee first name, last name and supervisor status along with their department name. Order by department name, then by employee last name, and finally by employee first name.
+--COMMENT: use CASE WHEN to change the bit value (1 or 0) to display as TRUE or FALSE
+
+SELECT  e.FirstName, e.LastName,  
+CASE WHEN e.isSupervisor  = 1 THEN 'TRUE' ELSE 'FALSE' END as Supervisor, d.[Name] as Department
+From Employee e
+LEFT JOIN Department d
+ON e.DepartmentId = d.Id
+ORDER BY d.[Name], e.LastName, e.FirstName 
 
 
 -- 2: List each department ordered by budget amount with the highest first.
 
+SELECT [Name], Budget
+FROM Department
+ORDER BY Budget desc
+
 
 -- 3: List each department name along with any employees (full name) in that department who are supervisors.
+-- COMMENT: had to concact Employee first name and last name with a space to get the full name in one column 
 
+SELECT d.[Name], e.FirstName + ' ' +  e.LastName as 'Supervisor'
+FROM Department d
+LEFT JOIN Employee e
+ON d.Id = e.DepartmentId
+WHERE e.IsSupervisor = 1
 
 -- 4: List each department name along with a count of employees in each department.
+
+SELECT d.[Name], SUM( e.DepartmentId) as 'Total Employees'
+FROM Department d
+LEFT JOIN Employee e
+ON d.Id = e.DepartmentId
+GROUP BY d.[Name], e.DepartmentId
+
 
 
 -- 5: Write a single update statement to increase each department's budget by 20%.
